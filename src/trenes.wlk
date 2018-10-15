@@ -42,7 +42,9 @@ class Formacion{
 	method arrastreMaximoDeTodasLasLocomotoras() = locomotora.sum{
 		loco => loco.pesoMaximoArrastrable()
 	}
-	
+	method pesoDeLocomotoras() = locomotora.sum{
+		loco => loco.peso()
+	}
 	method pesoMaximosDeTodosLosVagones() = vagones.sum{
 		vagon => vagon.pesoMaximo()
 	}
@@ -52,12 +54,32 @@ class Formacion{
 	method kgDeEmpujeParaMoverse() = if(self.puedeMoverse()) 0 else self.pesoMaximosDeTodosLosVagones() - self.arrastreMaximoDeTodasLasLocomotoras()
 	
 	method vagonMasPesado() = vagones.max{vagon => vagon.pesoMaximo()}
+	
+	method esCompleja() = vagones.size() + locomotora.size() > 20 or  self.pesoMaximosDeTodosLosVagones() + self.pesoDeLocomotoras() > 10000
 }
 
 class Deposito{
 	var property formaciones
+	var locomotorasSinUsar = []
+	
+	method agregarALocomotorasSinUso(locomotora){locomotorasSinUsar.add(locomotora)}
 	
 	method vagonesMasPesadosDeCadaFormacion() = formaciones.map{
 		form => form.vagonMasPesado()
+	}
+	
+	method esNecesarioConductorExp() = formaciones.any{f => f.esCompleja()}
+	
+	method agregarLocomotoraAFormacion(formacion){
+		var locomotoraBuscada
+		if(not formacion.puedeMoverse()){
+			locomotoraBuscada = locomotorasSinUsar.filter{
+				l => l.pesoMaximoArrastrable()>= formacion.kgDeEmpujeParaMoverse()
+			}.first()
+			
+			if(not locomotoraBuscada.isEmpty()) formacion.add(locomotoraBuscada)
+			// agregamos la primera que encuentra & que cumpla con las condiciones
+			// dado que no seria nada raro que haya mas de una
+		}
 	}
 }
