@@ -1,4 +1,53 @@
 import trenes.*
 describe "tests de parte 1"{
+	var locomotora1 = new Locomotora(
+		peso = 1000,
+		pesoMaximoArrastrable = 12000,
+		velocidadMaxima = 80
+	)
+	var locomotora2 = new Locomotora(
+		peso = 1500,
+		pesoMaximoArrastrable = 14000,
+		velocidadMaxima = 100
+	)
+	var vagon1 = new VagonDePasajeros(
+		largo = 4,
+		anchoUtil = 2.5
+	)
+	var vagon2 = new VagonDePasajeros(
+		largo = 5,
+		anchoUtil = 2
+	)
+	var vagon3 = new VagonDePasajeros(
+		largo = 3,
+		anchoUtil = 3
+	)
+	var vagon4 = new VagonDeCarga(
+		cargaMaxima = 10000
+	)
 	
+	var formacionA = new Formacion(
+		locomotoras = [locomotora1, locomotora2],
+		vagones = [vagon1, vagon2, vagon3, vagon4]
+	)
+	
+	test "Numero de Vagones livianos"{
+		assert.that(formacionA.cantidadDeVagonesLivianos() == 1)
+	}
+	
+	test "Velocidad Max De la Formacion"{
+		assert.that(formacionA.velocidadMaximaFormacion() == 80)
+	}
+	
+	test "Formacion Eficiente"{
+		assert.that(formacionA.esFormacionEficiente())
+	}
+	
+	test "Puede Moverse Formacion"{
+		assert.that(formacionA.puedeMoverse())
+	}
+	
+	test "KG faltantes de empuje"{
+		assert.equals(0, formacionA.kgDeEmpujeParaMoverse())
+	}
 }

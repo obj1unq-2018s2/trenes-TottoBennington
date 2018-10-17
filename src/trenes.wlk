@@ -1,6 +1,6 @@
 class VagonDePasajeros{
-	var property largo // dado que no tenemos una medida especifica
-	var property anchoUtil //dado que tampoco tenemos una medida especifica
+	var largo // dado que no tenemos una medida especifica
+	var anchoUtil //dado que tampoco tenemos una medida especifica
 	
 	method cantidadDePasajeroTransportables(){
 		return if(anchoUtil <= 2.5) largo * 8 else largo * 10
@@ -24,25 +24,25 @@ class Locomotora{
 }
 
 class Formacion{
-	var property locomotora
-	var property vagones // sera obviamente usado como una lista
+	var locomotoras = []
+	var vagones = []
 	
 	method cantidadDeVagonesLivianos() = vagones.filter{
 		vagon => vagon.pesoMaximo() < 2500
 	}.size()
 	
-	method velocidadMaximaFormacion() = locomotora.min{
+	method velocidadMaximaFormacion() = locomotoras.min{
 		loco => loco.velocidadMaxima()
 	}.velocidadMaxima() // ya que queremos la velocidad, no la locomotora.
 	
-	method esFormacionEficiente() = locomotora.all{
+	method esFormacionEficiente() = locomotoras.all{
 		loco => loco.pesoMaximoArrastrable() >= loco.peso() * 5
 	}           // si lo arrastrable es >= a 5 veces su peso base
 	
-	method arrastreMaximoDeTodasLasLocomotoras() = locomotora.sum{
+	method arrastreMaximoDeTodasLasLocomotoras() = locomotoras.sum{
 		loco => loco.pesoMaximoArrastrable()
 	}
-	method pesoDeLocomotoras() = locomotora.sum{
+	method pesoDeLocomotoras() = locomotoras.sum{
 		loco => loco.peso()
 	}
 	method pesoMaximosDeTodosLosVagones() = vagones.sum{
@@ -55,7 +55,7 @@ class Formacion{
 	
 	method vagonMasPesado() = vagones.max{vagon => vagon.pesoMaximo()}
 	
-	method esCompleja() = vagones.size() + locomotora.size() > 20 or  self.pesoMaximosDeTodosLosVagones() + self.pesoDeLocomotoras() > 10000
+	method esCompleja() = vagones.size() + locomotoras.size() > 20 or  self.pesoMaximosDeTodosLosVagones() + self.pesoDeLocomotoras() > 10000
 }
 
 class Deposito{
@@ -83,3 +83,7 @@ class Deposito{
 		}
 	}
 }
+/*
+class FormacionLargaDistancia inherits Formacion{
+	
+}*/
