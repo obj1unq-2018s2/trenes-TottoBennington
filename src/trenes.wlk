@@ -24,7 +24,7 @@ class Locomotora{
 }
 
 class Formacion{
-	var locomotoras = []
+	var property locomotoras = []
 	var vagones = []
 	
 	method cantidadDeVagonesLivianos() = vagones.filter{
@@ -71,13 +71,13 @@ class Deposito{
 	method esNecesarioConductorExp() = formaciones.any{f => f.esCompleja()}
 	
 	method agregarLocomotoraAFormacion(formacion){
-		var locomotoraBuscada
+		var locomotoraBuscada = null
 		if(not formacion.puedeMoverse()){
 			locomotoraBuscada = locomotorasSinUsar.filter{
 				l => l.pesoMaximoArrastrable()>= formacion.kgDeEmpujeParaMoverse()
 			}.first()
 			
-			if(not locomotoraBuscada.isEmpty()) formacion.add(locomotoraBuscada)
+			if(locomotoraBuscada != null) formacion.locomotoras().add(locomotoraBuscada)
 			// agregamos la primera que encuentra & que cumpla con las condiciones
 			// dado que no seria nada raro que haya mas de una
 		}

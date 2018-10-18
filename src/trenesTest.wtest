@@ -10,6 +10,16 @@ describe "tests de parte 1"{
 		pesoMaximoArrastrable = 14000,
 		velocidadMaxima = 100
 	)
+	var locomotora3 = new Locomotora(
+		peso = 1200,
+		pesoMaximoArrastrable = 5005,
+		velocidadMaxima = 95
+	)
+	var locomotora4 = new Locomotora(
+		peso = 1655,
+		pesoMaximoArrastrable = 11995,
+		velocidadMaxima = 88
+	)
 	var vagon1 = new VagonDePasajeros(
 		largo = 4,
 		anchoUtil = 2.5
@@ -31,6 +41,27 @@ describe "tests de parte 1"{
 		vagones = [vagon1, vagon2, vagon3, vagon4]
 	)
 	
+	var formacionB = new Formacion(
+		locomotoras = [locomotora1],
+		vagones = [vagon3, vagon4]
+	)
+	
+	var formacionC = new Formacion(
+		locomotoras = [locomotora2],
+		vagones = [vagon1, vagon2]
+	)
+	var formacionX = new Formacion(
+		locomotoras = [locomotora3],
+		vagones = [vagon1, vagon2]
+	)
+	
+	var locomotorasSinUso = [locomotora3, locomotora4]
+	
+	var deposito1 = new Deposito(
+		formaciones = [formacionA, formacionB, formacionC],
+		locomotorasSinUsar = locomotorasSinUso
+	)
+	
 	test "Numero de Vagones livianos"{
 		assert.that(formacionA.cantidadDeVagonesLivianos() == 1)
 	}
@@ -49,5 +80,15 @@ describe "tests de parte 1"{
 	
 	test "KG faltantes de empuje"{
 		assert.equals(0, formacionA.kgDeEmpujeParaMoverse())
+	}
+	test "Vagon mas pesado de cada formacion"{
+		assert.equals([vagon4, vagon4, vagon2], deposito1.vagonesMasPesadosDeCadaFormacion())
+	}
+	test "Conductor Experimentado"{
+		assert.that(deposito1.esNecesarioConductorExp())
+	}
+	test "Agregar locomotora para que la formacion pueda moverse"{
+		deposito1.agregarLocomotoraAFormacion(formacionX)
+		assert.that(formacionX.puedeMoverse())
 	}
 }
