@@ -2,14 +2,15 @@ class VagonDePasajeros{
 	
 	var largo // dado que no tenemos una medida especifica
 	var anchoUtil //dado que tampoco tenemos una medida especifica
-	
+	var banios = 0
 	method cantidadDePasajeroTransportables(){
 		return if(anchoUtil <= 2.5) largo * 8 else largo * 10
 	}
 	
 	method pesoMaximo() = self.cantidadDePasajeroTransportables() * 80
 	
-	method cantidadDeBanios() = self.roundDown(self.cantidadDePasajeroTransportables() / 50)
+	//method cantidadDeBanios() = self.roundDown(self.cantidadDePasajeroTransportables() / 50)
+	method cantidadDeBanios() = banios
 	
 	method roundDown(n){
 		// La idea es que dado un numero con coma redondearlo hacia abajo.
@@ -80,6 +81,9 @@ class Formacion{
 		v => v.cantidadDePasajeroTransportables()
 	}
 	method estaBienArmada() = self.puedeMoverse()
+	
+	method agregarVagon(vagon){vagones.add(vagon)}
+	method agregarLocomotora(locomotora){locomotoras.add(locomotora)}
 }
 
 class Deposito{
@@ -122,7 +126,10 @@ class FormacionesLargaDistancia inherits Formacion{
 	}
 	
 	method hayBaniosSuficientes(){
-		return (self.roundDown(self.cantidadDePasajerosDeFormacion() / 50)) == self.cantidadDeBaniosDeLaFormacion()
+		var cantBaniosQueDeberiaHaber = self.roundDown(self.cantidadDePasajerosDeFormacion() / 50)
+		return vagones.all{
+			v => v.cantidadDeBanios() >= cantBaniosQueDeberiaHaber
+		}
 	}
 	
 	override method estaBienArmada() = super() && self.hayBaniosSuficientes()
@@ -143,5 +150,5 @@ class FormacionesDeAltaVelocidad inherits FormacionesLargaDistancia{
 	
 	method limiteMaxDeVelocidad() = 400
 	
-	override method estaBienArmada() = super() && self.sonTodosSusVagonesLivianos() && self.velocidadMaxima() >= 250
+	override method estaBienArmada() = super() && self.sonTodosSusVagonesLivianos() && self.velocidadMaximaFormacion() >= 250
 }

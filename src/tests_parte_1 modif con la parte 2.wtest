@@ -1,0 +1,141 @@
+import trenes.*
+describe "tests de parte 2"{
+	var locomotora1 = new Locomotora(
+		peso = 1000,
+		pesoMaximoArrastrable = 12000,
+		velocidadMaxima = 80
+	)
+	var locomotora2 = new Locomotora(
+		peso = 1500,
+		pesoMaximoArrastrable = 14000,
+		velocidadMaxima = 100
+	)
+	var locomotora3 = new Locomotora(
+		peso = 1200,
+		pesoMaximoArrastrable = 5005,
+		velocidadMaxima = 95
+	)
+	var locomotora4 = new Locomotora(
+		peso = 1655,
+		pesoMaximoArrastrable = 11995,
+		velocidadMaxima = 88
+	)
+	var locomotora5 = new Locomotora(
+		peso = 1285,
+		pesoMaximoArrastrable = 8990,
+		velocidadMaxima = 255
+	)
+	var vagon1 = new VagonDePasajeros(
+		largo = 4,
+		anchoUtil = 2.5,
+		banios = 2
+	)
+	var vagon2 = new VagonDePasajeros(
+		largo = 5,
+		anchoUtil = 2, // 5x8=40 por ende 1 solo banio
+		banios = 1
+	)
+	var vagon3 = new VagonDePasajeros(
+		largo = 3,
+		anchoUtil = 3, // 3x10=30 por ende 1 solo banio
+		banios = 1
+	)
+	var vagon4 = new VagonDeCarga(
+		cargaMaxima = 10000
+	)
+	var vagon5 = new VagonDeCarga(
+		cargaMaxima = 13000
+	)
+	var vagon6 = new VagonDeCarga(
+		cargaMaxima = 15400
+	)
+	var formacionA = new Formacion(
+		locomotoras = [locomotora1, locomotora2],
+		vagones = [vagon1, vagon2, vagon3, vagon4]
+	)
+	
+	var formacionB = new Formacion(
+		locomotoras = [locomotora1],
+		vagones = [vagon3, vagon4]
+	)
+	
+	var formacionC = new Formacion(
+		locomotoras = [locomotora2],
+		vagones = [vagon1, vagon2]
+	)
+	var formacionX = new Formacion(
+		locomotoras = [locomotora3],
+		vagones = [vagon1, vagon2]
+	)
+	var formacionY = new Formacion(
+		locomotoras = [locomotora1, locomotora3],
+		vagones = [vagon1, vagon5, vagon6]
+	)
+	var formacionACortaDistancia = new FormacionesCortaDistancia()
+	
+	var formacionALargaDistancia = new FormacionesLargaDistancia(
+			nroCiudadesQueUne = 2
+	)
+	
+	var formacionDeAltaVelocidad = new FormacionesDeAltaVelocidad()
+	
+	var locomotorasSinUso = [locomotora3, locomotora4]
+	
+	var deposito1 = new Deposito(
+		formaciones = [formacionA, formacionB, formacionC],
+		locomotorasSinUsar = locomotorasSinUso
+	)
+	
+	fixture{
+		formacionACortaDistancia.agregarVagon(vagon1)
+		formacionACortaDistancia.agregarVagon(vagon2)
+		formacionACortaDistancia.agregarLocomotora(locomotora1)
+		
+		formacionALargaDistancia.agregarVagon(vagon3)
+		formacionALargaDistancia.agregarVagon(vagon2)
+		formacionALargaDistancia.agregarLocomotora(locomotora2)
+		
+		formacionDeAltaVelocidad.agregarVagon(vagon3)
+		formacionDeAltaVelocidad.agregarLocomotora(locomotora5)
+	}
+	
+	test "Numero de Vagones livianos"{
+		assert.that(formacionA.cantidadDeVagonesLivianos() == 1)
+	}
+	
+	test "Velocidad Max De la Formacion"{
+		assert.that(formacionA.velocidadMaximaFormacion() == 80)
+	}
+	
+	test "Formacion Eficiente"{
+		assert.that(formacionA.esFormacionEficiente())
+	}
+	
+	test "Puede Moverse Formacion"{
+		assert.that(formacionA.puedeMoverse())
+	}
+	
+	test "KG faltantes de empuje"{
+		assert.equals(0, formacionA.kgDeEmpujeParaMoverse())
+	}
+	test "Vagon mas pesado de cada formacion"{
+		assert.equals([vagon4, vagon4, vagon2], deposito1.vagonesMasPesadosDeCadaFormacion())
+	}
+	test "Conductor Experimentado"{
+		assert.that(deposito1.esNecesarioConductorExp())
+	}
+	test "Agregar locomotora para que la formacion pueda moverse"{
+		deposito1.agregarLocomotoraAFormacion(formacionX)
+		assert.that(formacionX.puedeMoverse())
+	}
+	test "Esta Bien Armada"{
+		assert.that(formacionACortaDistancia.estaBienArmada())
+		assert.that(formacionALargaDistancia.estaBienArmada())
+		assert.that(formacionDeAltaVelocidad.estaBienArmada())
+	}
+	test "Limites de Velocidad"{
+		assert.equals(formacionA.velocidadMaximaFormacion(), 80)
+		assert.equals(formacionALargaDistancia.velocidadMaxima(), 200)
+		assert.equals(formacionACortaDistancia.velocidadMaxima(), 60)
+	}
+}
